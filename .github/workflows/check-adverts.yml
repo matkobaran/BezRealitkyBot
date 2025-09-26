@@ -13,6 +13,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Download seen.json (if exists)
+        uses: actions/download-artifact@v4
+        with:
+          name: seen
+          path: .
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -21,23 +27,12 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Download previous seen.json
-        uses: actions/download-artifact@v3
-        with:
-          name: seen-json
-          path: .
-
       - name: Run check script
-        run: |
-          echo "============================"
-          echo "Starting Bezrealitky API check at $(date)"
-          python check_once.py
-          echo "Finished API check at $(date)"
-          echo "============================"
+        run: python check_once.py
 
-      - name: Upload seen.json as artifact
+      - name: Upload seen.json
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: seen-json
+          name: seen
           path: seen.json
