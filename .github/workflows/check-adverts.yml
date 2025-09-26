@@ -2,8 +2,8 @@ name: Check Bezrealitky Adverts
 
 on:
   schedule:
-    - cron: '*/5 8-21 * * *'   # každých 5 minút (UTC)
-  workflow_dispatch:         # možnosť manuálne spustiť
+    - cron: '*/5 8-21 * * *'   # každých 10 minút od 8:00 do 21:59
+  workflow_dispatch:             # možnosť manuálne spustiť
 
 jobs:
   check-adverts:
@@ -13,12 +13,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Restore seen.json cache
-        uses: actions/cache@v3
-        with:
-          path: seen.json
-          key: seen-json
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -27,14 +21,22 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
+      - name: Download seen.json artifact if exists
+        uses: actions/download-artifact@v4
+        with:
+          name: seen
+          path: .
+        continue-on-error: true   # ak ešte neexistuje, nevadí
+
       - name: Run check script
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python check_once.py
 
-      - name: Save seen.json cache
-        uses: actions/cache@v3
+      - name: Upload updated seen.json as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
+          name: seen
           path: seen.json
-          key: seen-json
