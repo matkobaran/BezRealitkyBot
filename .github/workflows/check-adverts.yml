@@ -21,25 +21,23 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run check script
-        run: python check_once.py
-        
-      - name: Test push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          echo "test" > test.txt
-          git add test.txt
-          git commit -m "test push from actions"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+      - name: Download previous seen.json
+        uses: actions/download-artifact@v3
+        with:
+          name: seen-json
+          path: .
 
-      - name: Commit seen.json back to repo
-        if: always()
+      - name: Run check script
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -f seen.json ]; then
-            git add seen.json
-            git diff-index --quiet HEAD || git commit -m "Update seen.json from workflow"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-          fi
+          echo "============================"
+          echo "Starting Bezrealitky API check at $(date)"
+          python check_once.py
+          echo "Finished API check at $(date)"
+          echo "============================"
+
+      - name: Upload seen.json as artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: seen-json
+          path: seen.json
