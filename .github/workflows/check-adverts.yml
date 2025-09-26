@@ -26,11 +26,12 @@ jobs:
         
       - name: Test push
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           echo "test" > test.txt
           git add test.txt
           git commit -m "test push from actions"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-
 
       - name: Commit seen.json back to repo
         if: always()
