@@ -2,7 +2,7 @@ name: Check Bezrealitky Adverts
 
 on:
   schedule:
-    - cron: '*/10 8-21 * * *'   # každých 5 minút (UTC)
+    - cron: '*/5 8-21 * * *'   # každých 5 minút (UTC)
   workflow_dispatch:         # možnosť manuálne spustiť
 
 jobs:
