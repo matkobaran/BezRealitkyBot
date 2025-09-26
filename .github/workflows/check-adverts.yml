@@ -22,8 +22,7 @@ jobs:
         run: pip install requests
 
       - name: Run check script
-        run: |
-          python check_once.py
+        run: python check_once.py
 
       - name: Commit seen.json back to repo
         if: always()
@@ -34,4 +33,3 @@ jobs:
             git add seen.json
             git diff-index --quiet HEAD || git commit -m "Update seen.json from workflow"
             git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-          fi
