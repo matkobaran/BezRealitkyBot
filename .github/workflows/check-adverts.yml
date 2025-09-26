@@ -23,6 +23,14 @@ jobs:
 
       - name: Run check script
         run: python check_once.py
+        
+      - name: Test push
+        run: |
+          echo "test" > test.txt
+          git add test.txt
+          git commit -m "test push from actions"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+
 
       - name: Commit seen.json back to repo
         if: always()
