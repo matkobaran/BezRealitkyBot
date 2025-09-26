@@ -18,6 +18,8 @@ jobs:
         with:
           name: seen
           path: .
+        continue-on-error: true
+
 
       - name: Set up Python
         uses: actions/setup-python@v4
