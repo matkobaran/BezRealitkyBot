@@ -33,3 +33,4 @@ jobs:
             git add seen.json
             git diff-index --quiet HEAD || git commit -m "Update seen.json from workflow"
             git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          fi
