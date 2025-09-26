@@ -10,7 +10,7 @@ URL = "https://api.bezrealitky.cz/graphql/"
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
-SEEN_FILE = Path("seen.json")
+SEEN_FILE = Path("seen.json")  # artifact file
 
 QUERY = """query AdvertList(
   $estateType: [EstateType]
@@ -75,16 +75,19 @@ def send_telegram(message):
         print("Chyba pri posielaní Telegram správy:", e)
 
 def load_seen():
+    """Načíta predchádzajúce ID inzerátov zo súboru artifact"""
     if SEEN_FILE.exists():
         try:
             return set(json.loads(SEEN_FILE.read_text()))
-        except Exception:
+        except Exception as e:
+            print("Chyba pri načítaní seen.json:", e)
             return set()
     return set()
 
 def save_seen(seen):
+    """Uloží aktuálne ID do seen.json pre ďalší workflow run"""
     try:
-        SEEN_FILE.write_text(json.dumps(list(seen)))
+        SEEN_FILE.write_text(json.dumps(list(seen), indent=2))
     except Exception as e:
         print("Chyba pri ukladaní seen.json:", e)
 
@@ -125,6 +128,7 @@ def main():
         seen.add(ad_id)
 
     save_seen(seen)
+    print("Aktuálny stav seen.json uložený.")
     return 0
 
 if __name__ == "__main__":
