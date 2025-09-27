@@ -2,8 +2,8 @@ name: Check Bezrealitky Adverts
 
 on:
   schedule:
-    - cron: '*/5 8-21 * * *'   # každých 5 minút (UTC)
-  workflow_dispatch:         # možnosť manuálne spustiť
+    - cron: '*/10 8-21 * * *'   # každých 10 minút medzi 8:00–21:59 UTC
+  workflow_dispatch:             # možnosť manuálne spustiť
 
 jobs:
   check-adverts:
@@ -13,6 +13,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      # Restore last seen.json from previous run
       - name: Restore seen.json cache
         uses: actions/cache@v3
         with:
@@ -20,7 +21,6 @@ jobs:
           key: seen-json-${{ github.run_id }}
           restore-keys: |
             seen-json-
-
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -36,8 +36,9 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python check_once.py
 
+      # Save updated seen.json with new unique cache key
       - name: Save seen.json cache
         uses: actions/cache@v3
         with:
           path: seen.json
-          key: seen-json
+          key: seen-json-${{ github.run_id }}
