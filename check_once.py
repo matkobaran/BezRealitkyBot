@@ -47,19 +47,25 @@ QUERY = """query AdvertList(
 }"""
 
 VARIABLES = {
+    "limit": 15,
+    "offset": 0,
+    "order": "TIMEORDER_DESC",
+    "locale": "CS",
     "offerType": ["PRONAJEM"],
     "estateType": ["BYT"],
-    "disposition": ["GARSONIERA","DISP_1_KK","DISP_1_1"],
     "priceTo": 18000,
     "regionOsmIds": [],
-    "boundaryPoints":[
-        {"lng":14.542766752113863,"lat":50.129848668740635},
-        {"lng":14.293500639030896,"lat":50.129848668740635},
-        {"lng":14.293500639030896,"lat":50.033045643935},
-        {"lng":14.542766752113863,"lat":50.033045643935},
-        {"lng":14.542766752113863,"lat":50.129848668740635}
+    "boundaryPoints": [
+        {"lng": 14.585412396243072, "lat": 50.15198052104293},
+        {"lng": 14.25962741805239, "lat": 50.15198052104293},
+        {"lng": 14.25962741805239, "lat": 50.000466769035654},
+        {"lng": 14.585412396243072, "lat": 50.000466769035654},
+        {"lng": 14.585412396243072, "lat": 50.15198052104293}
     ],
-    "currency":"CZK"
+    "searchOnMap": True,
+    "location": "exact",
+    "currency": "CZK",
+    "construction": []
 }
 
 def send_telegram(message):
